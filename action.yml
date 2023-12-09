@@ -1,21 +1,21 @@
-name: "Record release"
-description: "Record a release done externally to Prodvana."
+name: "Record deployment"
+description: "Record a deployment done externally to Prodvana."
 inputs:
   app:
-    description: "A unique name for the application being released. An application is a collection of related services with the same set of release channels. e.g. infra, product, <company name>"
+    description: "A unique name for the application being deployed. An application is a collection of related services with the same set of release channels. e.g. infra, product, <company name>"
     required: true
   service:
-    description: "A unique name for the service being released, e.g. api, web"
+    description: "A unique name for the service being deployed, e.g. api, web"
     required: true
   release_channel:
-    description: "A unique name for the release channel of the service being released, e.g. staging, prod"
+    description: "A unique name for the release channel of the service being deployed, e.g. staging, prod"
     required: true
   deployment_system:
-    description: "The deployment system doing the release"
+    description: "The deployment system doing the deployment"
     required: true
     default: "github-actions"
   pending:
-    description: "Record the release in pending state instead of succeeded state, meant to be used with update-release-status action"
+    description: "Record the deployment in pending state instead of succeeded state, meant to be used with update-deployment-status action"
     type: boolean
     defualt: false
   auth_context:
@@ -23,14 +23,17 @@ inputs:
     required: true
     default: "default"
 outputs:
+  deployment_id:
+    description: "A unique identifier for the deployment created"
+    value: ${{ steps.pvnctl-deployments-record.outputs.deployment-id }}
   release_id:
-    description: "A unique identifier for the release created"
-    value: ${{ steps.pvnctl-releases-record.outputs.release-id }}
+    description: "same as deployment_id, preserved for backwards compatibility"
+    value: ${{ steps.pvnctl-deployments-record.outputs.release-id }}
 runs:
   using: "composite"
   steps:
-    - name: pvnctl releases record
-      id: pvnctl-releases-record
+    - name: pvnctl deployment record
+      id: pvnctl-deployments-record
       shell: bash
       run: |
         set -euxo pipefail
@@ -39,5 +42,6 @@ runs:
         if [[ "${{ inputs.pending }}" == "true" ]]; then
           CMD="$CMD --pending"
         fi
-        RELEASE_ID=$(eval "${CMD}")
-        echo "release-id=$RELEASE_ID" >> $GITHUB_OUTPUT
+        DEPLOYMENT_ID=$(eval "${CMD}")
+        echo "release-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
+        echo "deployment-id=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
