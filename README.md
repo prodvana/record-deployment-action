@@ -1,6 +1,6 @@
-# record-release Github Action
+# record-deployment Github Action
 
-This action records a release happening on GitHub Actions to Prodvana.
+This action records a deployment happening on GitHub Actions to Prodvana.
 
 
 # Requirements
@@ -13,11 +13,11 @@ This action records a release happening on GitHub Actions to Prodvana.
 
 | Input             | Default        | Description                                                                                                                                              |
 | ----------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| app               | (required)     | A unique name for the application being released. An application is a collection of related services with the same set of release channels. e.g. infra, product, <company name>     |
-| service           | (required)     | A unique name for the service being released, e.g. api, web                                                                                              |
-| release_channel   | (required)     | A unique name for the release channel of the service being released, e.g. staging, prod                                                                  |
-| deployment_system | github-actions | The deployment system doing the release                                                                                                                  |
-| pending           | false          | Record the release in pending state instead of succeeded state, meant to be used with update-release-status action                                       |
+| app               | (required)     | A unique name for the application being deployed. An application is a collection of related services with the same set of deployment channels. e.g. infra, product, <company name>     |
+| service           | (required)     | A unique name for the service being deployed, e.g. api, web                                                                                              |
+| release_channel   | (required)     | A unique name for the release channel of the service being deployed, e.g. staging, prod                                                                  |
+| deployment_system | github-actions | The deployment system doing the deployment                                                                                                                  |
+| pending           | false          | Record the deployment in pending state instead of succeeded state, meant to be used with update-deployment-status action                                       |
 | auth_context      | default        | pvnctl auth context to use. If you're using this action with init-pvnctl, leave as the default                                                           |
 
 
@@ -30,7 +30,7 @@ steps:
     with:
       org: my-org
       api_token: ${{ secrets.YOUR_PRODVANA_API_TOKEN }}
-  - uses: prodvana/record-release-action@v0.1.2
+  - uses: prodvana/record-deployment-action@v0.1.2
     with:
       app: product-name
       service: web
